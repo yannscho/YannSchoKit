@@ -3,22 +3,22 @@
 //  Created by Yann Scholtes on 12/05/2026.
 import SwiftUI
 
-extension Date {
+public extension Date {
     var calendar: Calendar { Calendar.current }
     
-    public func adding(_ value: Int, _ component: Calendar.Component) -> Date {
+    func adding(_ value: Int, _ component: Calendar.Component) -> Date {
         calendar.date(byAdding: component, value: value, to: self) ?? Date.now
     }
     
-    public func isSameDay(as other: Date) -> Bool {
+    func isSameDay(as other: Date) -> Bool {
         calendar.isDate(self, inSameDayAs: other)
     }
     
-    public func hasSame(_ component: Calendar.Component, as other: Date) -> Bool {
+    func hasSame(_ component: Calendar.Component, as other: Date) -> Bool {
         Calendar.current.isDate(self, equalTo: other, toGranularity: component)
     }
     
-    public func firstDay(of component: Calendar.Component) -> Date {
+    func firstDay(of component: Calendar.Component) -> Date {
         switch component {
         case .weekOfYear, .weekOfMonth:
             return calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) ?? self
@@ -31,7 +31,7 @@ extension Date {
         }
     }
     
-    public func lastDay(of component: Calendar.Component) -> Date {
+    func lastDay(of component: Calendar.Component) -> Date {
         switch component {
         case .weekOfYear, .weekOfMonth:
             let firstDay = firstDay(of: .weekOfYear)
@@ -47,13 +47,13 @@ extension Date {
         }
     }
     
-    public var asString: DateFormatter.Output {
+    var asString: DateFormatter.Output {
         DateFormatter.Output(date: self)
     }
 }
 
-extension DateFormatter {
-    public struct Output {
+public extension DateFormatter {
+    struct Output {
         let date: Date
         
         public var abbreviated: String {
