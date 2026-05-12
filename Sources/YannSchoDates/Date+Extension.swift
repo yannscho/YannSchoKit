@@ -18,34 +18,45 @@ public extension Date {
         Calendar.current.isDate(self, equalTo: other, toGranularity: component)
     }
     
-    func firstDay(of component: Calendar.Component) -> Date {
-        switch component {
-        case .weekOfYear, .weekOfMonth:
-            return calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) ?? self
-        case .month:
-            return calendar.date(from: calendar.dateComponents([.year, .month], from: self)) ?? self
-        case .year:
-            return calendar.date(from: calendar.dateComponents([.year], from: self)) ?? self
-        default:
-            return self
-        }
+    func firstDay(of component: Calendar.Component, in calendar: Calendar = .current) -> Date {
+        let interval = calendar.dateInterval(of: component, for: self)
+        return calendar.startOfDay(for: interval?.start ?? self)
     }
     
-    func lastDay(of component: Calendar.Component) -> Date {
-        switch component {
-        case .weekOfYear, .weekOfMonth:
-            let firstDay = firstDay(of: .weekOfYear)
-            return calendar.date(byAdding: .day, value: 6, to: firstDay) ?? self
-        case .month:
-            let firstDay = firstDay(of: .month)
-            return calendar.date(byAdding: DateComponents(month: 1, day: -1), to: firstDay) ?? self
-        case .year:
-            let firstDay = firstDay(of: .year)
-            return calendar.date(byAdding: DateComponents(year: 1, day: -1), to: firstDay) ?? self
-        default:
-            return self
-        }
+    func lastDay(of component: Calendar.Component, in calendar: Calendar = .current) -> Date {
+        let interval = calendar.dateInterval(of: component, for: self)
+        guard let end = interval?.end else { return calendar.startOfDay(for: self) }
+        return calendar.startOfDay(for: calendar.date(byAdding: .second, value: -1, to: end) ?? end)
     }
+    
+//    func firstDay(of component: Calendar.Component) -> Date {
+//        switch component {
+//        case .weekOfYear, .weekOfMonth:
+//            return calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) ?? self
+//        case .month:
+//            return calendar.date(from: calendar.dateComponents([.year, .month], from: self)) ?? self
+//        case .year:
+//            return calendar.date(from: calendar.dateComponents([.year], from: self)) ?? self
+//        default:
+//            return self
+//        }
+//    }
+//    
+//    func lastDay(of component: Calendar.Component) -> Date {
+//        switch component {
+//        case .weekOfYear, .weekOfMonth:
+//            let firstDay = firstDay(of: .weekOfYear)
+//            return calendar.date(byAdding: .day, value: 6, to: firstDay) ?? self
+//        case .month:
+//            let firstDay = firstDay(of: .month)
+//            return calendar.date(byAdding: DateComponents(month: 1, day: -1), to: firstDay) ?? self
+//        case .year:
+//            let firstDay = firstDay(of: .year)
+//            return calendar.date(byAdding: DateComponents(year: 1, day: -1), to: firstDay) ?? self
+//        default:
+//            return self
+//        }
+//    }
     
     var asString: DateFormatter.Output {
         DateFormatter.Output(date: self)
